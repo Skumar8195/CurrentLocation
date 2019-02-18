@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<HTML>
+    <head>
+        <title>Show Current Location</title>
+    </head>
+    <body>
+        <h4>your location here</h4>
+        <input id="btnshow" type="button" value="Show Location" onclick="getLocation()">
+        <p id="lat"></p>
+        <p id="lon"></p>
+        <p id="error"></p>
+        <input type="text" id="txtlat" value="" placeholder="Enter your location"><br><br>
+        <input type="text" id="txtlat" value="" placeholder="Enter your destination">
+        <div id="map" style="height: 500px; width: 600px; border: 1px solid skyblue;"></div>
+    </body>
+    <script>
+        var map;
+        
+       function showLocation(position)
+       {
+            var lat=position.coords.latitude;
+            var lon=position.coords.longitude;
+            var myLatLng = {lat:position.coords.latitude, lng:position.coords.longitude};
+           
+        //    var cords={latitude,longitude};
+           document.getElementById("lat").innerHTML=lat;
+           document.getElementById("lon").innerHTML=lon;
+           map=new google.maps.Map(document.getElementById("map"),
+                {
+                    center:myLatLng,
+                    zoom:6
+                });
+                var markerImage = 'https://mts.googleapis.com/vt/icon/name=icons/spotlight/spotlight-waypoint-a.png&text=A&psize=16&font=fonts/Roboto-Regular.ttf&color=ff333333&ax=44&ay=48&scale=1';
+
+                     var marker=new google.maps.Marker({
+                       position:myLatLng,
+                       map:map,
+                       title:"You are here.",
+                       icon: markerImage
+                     });
+       }
+       function errorHandler(err) 
+       {
+            if(err.code == 1) {
+               alert("Error: Access is denied!");
+            } else if( err.code == 2) {
+               alert("Error: Position is unavailable!");
+            }
+        }
+       function getLocation()
+       {
+
+           if(navigator.geolocation)
+           {
+               var options = {timeout:60000};
+               navigator.geolocation.watchPosition(showLocation,errorHandler,options);
+               
+           }
+           else
+           {
+               document.getElementById("error").value="Geolocation is not supported by this browser.";
+           }
+       }
+       
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCR99OVy8Uk2h_Y77AAvvhMyPuDeSSkHjM&callback=getLocation"></script>
+</HTML>
